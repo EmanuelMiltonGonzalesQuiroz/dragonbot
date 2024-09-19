@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Series</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <h1>Gestión de Series</h1>
+
+    <!-- Formulario para agregar nueva carpeta -->
+    <form action="/add_folder" method="POST">
+        <h2>Agregar nueva carpeta</h2>
+        <label for="folder_name">Nombre de la carpeta:</label>
+        <input type="text" id="folder_name" name="folder_name" required>
+        <label for="folder_id">ID de la carpeta:</label>
+        <input type="text" id="folder_id" name="folder_id" required>
+        <button type="submit" class="btn btn-warning">Agregar</button>
+    </form>
+
+    <h2>Obtener nombres e IDs</h2>
+    <form action="/download_excel" method="POST">
+        <label for="folder_name_select">Seleccionar carpeta:</label>
+        <select id="folder_name_select" name="folder_name" onchange="updateFolderId(this)">
+            {% for folder in folders %}
+                <option value="{{ folder[0] }}" data-id="{{ folder[1] }}">{{ folder[0] }}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" id="selected_folder_id" name="folder_id">  <!-- Campo oculto para folder_id -->
+        <button type="submit" class="btn btn-success">DESCARGAR EXCEL</button>
+    </form>
+
+    <!-- Script para manejar el cambio de carpeta y obtener su ID -->
+    <script>
+        function updateFolderId(select) {
+            const folderId = select.options[select.selectedIndex].getAttribute('data-id');
+            document.getElementById('selected_folder_id').value = folderId;
+            console.log("Folder ID seleccionado:", folderId); // Para ver el ID en la consola del navegador
+        }
+
+        // Para asegurarse de que el primer valor seleccionado tenga el folder_id correcto en el hidden input
+        document.addEventListener("DOMContentLoaded", function() {
+            const select = document.getElementById('folder_name_select');
+            updateFolderId(select);  // Establece el folder_id del primer elemento seleccionado al cargar la página
+        });
+    </script>
+    
+    <!-- Enlace al archivo JavaScript -->
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
